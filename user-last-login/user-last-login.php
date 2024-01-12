@@ -3,7 +3,7 @@
 Plugin Name:  User Last Login
 Plugin URI:   https://github.com/zaxbux/wp-user-last-login
 Description:  Adds a column to the users table to see last login time.
-Version:      1.0
+Version:      1.1
 Author:       zaxbux
 Author URI:   https://github.com/zaxbux
 License:      MIT
@@ -12,12 +12,19 @@ Text Domain:  user-last-login
 Domain Path:  /languages
 */
 
-//Record user's last login to custom meta
+// Record user's last login to custom meta
 add_action('wp_login', 'z_capture_login_time', 10, 2);
+// For compatability with other login plugins
+add_action('set_auth_cookie', 'z_capture_login_cookie', 10, 5);
 
 function z_capture_login_time($user_login, $user)
 {
 	update_user_meta($user->ID, 'last_login', time());
+}
+
+function z_capture_login_cookie($auth_cookie, $expire, $expiration, $user_id, $scheme)
+{
+	update_user_meta($user_id, 'last_login', time());
 }
 
 //Register new custom column with last login time
